@@ -5,11 +5,10 @@ import Post from "../model/post.model.js"
 //  get feed posts
 export const getFeedPosts = async (req, res) => {
     try {
-        const posts = await Post.find({ author: { $in: req.user.connections } })
+        const posts = await Post.find({ author: { $in: [...req.user.connections, req.user._id] } })
             .populate("author", "name username profilePicture headline")
             .populate("comments.user", "name profilePicture")
             .sort({ createdAt: -1 })
-
         res.status(200).json(posts)
     } catch (error) {
         console.error(`Error in get feed posts: ${error.message}`)
@@ -136,14 +135,14 @@ export const likePost = async (req, res) => {
             post = await Post.findById(postId),
             userId = req.user._id
 
-        if(post.likes.includes(userId)) {
+        if (post.likes.includes(userId)) {
             //  Unlike the post
             post.likes = post.likes.filter((id) => id.toString() !== userId.toString())
         } else {
             //  Like the post
             post.likes.push(userId)
 
-            if(post.author.toString() !== userId.toString()) {
+            if (post.author.toString() !== userId.toString()) {
                 const newNotification = new Notification({
                     recipient: post.author,
                     type: "like",
