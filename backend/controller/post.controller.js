@@ -20,7 +20,6 @@ export const getFeedPosts = async (req, res) => {
 export const createPost = async (req, res) => {
     try {
         const { content, image } = req.body
-
         let newPost
 
         if (image) {
@@ -36,10 +35,9 @@ export const createPost = async (req, res) => {
                 content
             })
         }
-
         await newPost.save()
 
-        res.status(200).json(newPost)
+        res.status(201).json(newPost)
     } catch (error) {
         console.error(`Error in create post: ${error.message}`)
         res.status(500).json({ message: `Error in create post: ${error.message}` })
@@ -91,7 +89,7 @@ export const createComment = async (req, res) => {
     try {
         const postId = req.params.id
         const { content } = req.body
-        const post = await findByIdAndUpdate(postId, { $push: { comments: { user: req.user._id, content } } }, { new: true })
+        const post = await Post.findByIdAndUpdate(postId, { $push: { comments: { user: req.user._id, content } } }, { new: true })
             .populate("author", "name email username profilePicture headline")
 
         // create a notification if the comment owner is not the post owner  

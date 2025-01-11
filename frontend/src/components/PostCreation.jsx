@@ -11,7 +11,7 @@ const PostCreation = ({ user }) => {
     const [imagePreview, setImagePreview] = useState(null)
 
     const queryClient = useQueryClient()
-
+    //  useMutation hook for creating a post
     const { mutate: createPostCreation, isPending } = useMutation({
         mutationFn: async (postData) => {
             const response = await axiosInstance.post("/posts/create", postData, {
@@ -32,13 +32,15 @@ const PostCreation = ({ user }) => {
     //  handle post creation
     const handlePostCreation = async () => {
         try {
-            const postData = { content }
-            if (image) postData.content = await readFileAsDataURL(image);
-            createPostCreation(postData)
+            const postData = { content };                                   // Initialize with text content
+            if (image) {
+                postData.image = await readFileAsDataURL(image);            // Add image data as a separate field
+            }
+            createPostCreation(postData);                                    // Use the mutation to send the data
         } catch (error) {
-            console.log("Error in handlePostCreation", error)
+            console.error("Error in handlePostCreation", error);
         }
-    }
+    };    
 
     //  reset form
     const resetForm = () => {
@@ -60,7 +62,7 @@ const PostCreation = ({ user }) => {
         return new Promise((resolve, reject) => {
             const reader = new FileReader()
             reader.onloadend = () => resolve(reader.result)
-            reader.onerror = (error) => reject(error)
+            reader.onerror = reject
             reader.readAsDataURL(file)
         })
     }
