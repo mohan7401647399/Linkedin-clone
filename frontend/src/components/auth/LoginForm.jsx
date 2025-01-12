@@ -28,7 +28,7 @@ const LoginForm = () => {
     return (
         <form onSubmit={ handleSubmit } className="space-y-4 w-full max-w-md" >
             <input type="text" placeholder="Username" value={ username } onChange={ (e) => setUsername(e.target.value) } className="input input-bordered w-full max-w-xs" required />
-            <input type="text" placeholder="Password" value={ password } onChange={ (e) => setPassword(e.target.value) } className="input input-bordered w-full max-w-xs" required />
+            <input type="password" placeholder="Password" value={ password } onChange={ (e) => setPassword(e.target.value) } className="input input-bordered w-full max-w-xs" required />
             <button type="submit" className="btn btn-primary w-full max-w-xs">
                 { isLoading ? <Loader className="size animate-spin" /> : "Login" }
             </button>
