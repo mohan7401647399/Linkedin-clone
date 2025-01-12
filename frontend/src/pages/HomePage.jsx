@@ -26,10 +26,6 @@ const HomePage = () => {
     }
   })
 
-  console.log("authUser", authUser)
-  console.log("recommendedUsers", recommendedUsers)
-  console.log("posts", posts)
-
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       <div className="hidden lg:block lg:col-span-1">

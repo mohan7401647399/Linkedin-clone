@@ -85,7 +85,6 @@ const Navbar = () => {
               <button
                 className='flex items-center space-x-1 text-sm text-gray-600 hover:text-gray-800'
                 onClick={ () => {
-                  console.log('logout')
                   logout()
                 } }
               >
