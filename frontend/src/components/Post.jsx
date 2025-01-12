@@ -2,12 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import { useState } from "react"
 import { axiosInstance } from "../lib/axios"
 import toast from "react-hot-toast"
-import { Link } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import { Loader, MessageCircle, Send, Share2, ThumbsUp, Trash2 } from "lucide-react"
 import PostAction from "./PostAction"
-
+import { formatDistanceToNow } from 'date-fns'
 
 const Post = ({ post }) => {
+    const { postId } = useParams()
 
     const { data: authUser } = useQuery({ queryKey: ["authUser"] })
     const [showComments, setShowComments] = useState(false)
@@ -17,6 +18,7 @@ const Post = ({ post }) => {
     const isLiked = post.likes.includes(authUser._id)
 
     const queryClient = useQueryClient()
+
     //  useMutation hook for deleting a post
     const { mutate: deletePost, isPending: isDeletingPost } = useMutation({
         mutationFn: async () => {
@@ -52,22 +54,26 @@ const Post = ({ post }) => {
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["posts"] })
+            queryClient.invalidateQueries({ queryKey: ["post", postId] })
         },
         onError: (err) => {
             toast.error(err.response.data.message || "Failed to like a post")
         }
     })
 
+    //  handle delete post fn
     const handleDeletePost = () => {
         if (!window.confirm("Are you sure you want to delete this post?")) return
         deletePost()
     }
 
+    //  handle like post fn
     const handleLikePost = () => {
         if (isLikedPost) return
         likePost()
     }
 
+    //  handle add comment fn
     const handleAddComment = async (e) => {
         e.preventDefault()
         if (newComment.trim()) {
@@ -103,6 +109,7 @@ const Post = ({ post }) => {
                                 <h3 className="font-semibold">{ post?.author?.name }</h3>
                             </Link>
                             <p className="text-xs text-info">{ post?.author?.headline }</p>
+                            <p className={ 'text-xs text-info' }>{ formatDistanceToNow(new Date(post.createdAt), { addSuffix: true }) } </p>
                         </div>
                     </div>
                     {
@@ -138,9 +145,10 @@ const Post = ({ post }) => {
                         { comments.map((comment) => (
                             <div key={ comment._id } className={ 'mb-2 bg-base-100 p-2 rounded flex items-start' }>
                                 <img src={ comment.user.profilePicture || "/avatar.png" } alt={ comment.user.name } className={ 'w-10 h-10 rounded-full mr-2 flex-shrink-0' } />
-                                <div className={ 'flex grow' }>
+                                <div className={ 'flex-grow' }>
                                     <div className={ 'flex items-center mb-1' }>
                                         <span className={ 'font-semibold mr-2' }>{ comment.user.name } </span>
+                                        <span className={'text-xs text-info'}> {formatDistanceToNow(new Date(comment.createdAt))} </span>
                                     </div>
                                     <p>{ comment.content } </p>
                                 </div>
@@ -148,7 +156,7 @@ const Post = ({ post }) => {
                         )) }
                     </div>
                     <form onSubmit={ handleAddComment } className={ 'flex items-center' }>
-                        <input type="text" placeholder="Add a comment" value={ newComment } onChange={ (e) => setNewComment(e.target.value) } className="input input-bordered w-full max-w-xs" />
+                        <input type="text" placeholder="Add a comment..." value={ newComment } onChange={ (e) => setNewComment(e.target.value) } className="flex-grow p-2 rounded-l-full bg-base-100 focus:outline-none focus:ring-2 focus:ring-primary" />
                         <button type={ 'submit' } disabled={ isCreatingComment } className={ 'bg-primary text-white p-2 rounded-r-full hover:bg-primary-dark transition duration-300' }>
                             { isCreatingComment ? <Loader size={ 18 } className="animate-spin" /> : <Send size={ 18 } /> }
                         </button>

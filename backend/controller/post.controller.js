@@ -1,5 +1,6 @@
 import { sendCommendNotificationEmail } from "../emails/emailHandlers.js"
 import cloudinary from "../lib/cloudinary.js"
+import Notification from "../model/notification.model.js"
 import Post from "../model/post.model.js"
 
 //  get feed posts
@@ -77,7 +78,7 @@ export const getPostById = async (req, res) => {
             .populate("author", "name username profilePicture headline")
             .populate("comments.user", "name username headline profilePicture")
 
-        req.status(200).json(post)
+        res.status(200).json(post)
     } catch (error) {
         console.error(`Error in get post by id: ${error.message}`)
         res.status(500).json({ message: `Error in get post by id: ${error.message}` })
@@ -93,7 +94,7 @@ export const createComment = async (req, res) => {
             .populate("author", "name email username profilePicture headline")
 
         // create a notification if the comment owner is not the post owner  
-        if (post.author.toString() !== req.user._id.toString()) {
+        if (post.author._id.toString() !== req.user._id.toString()) {
             const newNotification = new Notification({
                 recipient: post.author,
                 type: "comment",
@@ -151,9 +152,7 @@ export const likePost = async (req, res) => {
             }
         }
         await post.save()
-
         res.status(200).json(post)
-
     } catch (error) {
         console.error(`Error in like a post: ${error.message}`)
         res.status(500).json({ message: `Error in like a post: ${error.message}` })

@@ -8,6 +8,7 @@ import connectionRoutes from "./routes/connection.route.js"
 import { connectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors"
+import Path from "path"
 
 //  dotenv config
 dotenv.config()
@@ -15,12 +16,14 @@ dotenv.config()
 //  express server
 const app = express();
 const PORT = process.env.PORT || 5000;
+const __dirname = Path.resolve()
 
-app.use(cors( {
-    origin: process.env.CLIENT_URL,
-    // origin: "http://localhost:5173",
-    credentials: true,
-}))
+if(process.env.NODE_ENV === "production") {
+    app.use(cors( {
+        origin: process.env.CLIENT_URL,
+        credentials: true,
+    }))    
+}
 
 // parse JSON request body
 app.use(express.json({limit: "5mb"}))
@@ -33,6 +36,16 @@ app.use('/api/v1/auth', authRoutes)                         //  auth routes
     .use('/api/v1/notifications', notificationRoutes)       //  notification routes
     .use('/api/v1/connections', connectionRoutes)           //  connection routes
  
+if(process.env.NODE_ENV === "production") {
+    app.use(express.static(Path.join(__dirname, "/frontend/dist")))
+
+    app.get("*", (req, res) => {
+        res.sendFile(Path.resolve(__dirname, "frontend", "dist", "index.html"))
+    })
+
+}
+
+
 // app connection with server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

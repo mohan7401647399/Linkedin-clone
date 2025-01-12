@@ -11,6 +11,7 @@ const PostCreation = ({ user }) => {
     const [imagePreview, setImagePreview] = useState(null)
 
     const queryClient = useQueryClient()
+    
     //  useMutation hook for creating a post
     const { mutate: createPostCreation, isPending } = useMutation({
         mutationFn: async (postData) => {
