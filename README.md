@@ -1,8 +1,7 @@
 # LinkedIn Clone - MERN Stack  
 A full-stack LinkedIn clone built using the MERN stack (MongoDB, Express.js, React.js, Node.js) to mimic key functionalities of LinkedIn. This project showcases advanced skills in web development, state management, and database integration.
 
-## Live link
-https://linkedin-clone-yimy.onrender.com/
+## Live link - https://linkedin-clone-yimy.onrender.com/
 
 ## Features  
 - **User Authentication**: Secure login and registration using JWT.  
