@@ -6,7 +6,7 @@ import FriendRequest from "../components/FriendRequest";
 import UserCard from "../components/UserCard";
 
 const NetworkPage = () => {
-	const { data: user } = useQuery({ queryKey: ["authUser"] });
+	const { data: authUser } = useQuery({ queryKey: ["authUser"] });
 
     //  get connection requests
 	const { data: connectionRequests } = useQuery({
@@ -23,7 +23,7 @@ const NetworkPage = () => {
 	return (
 		<div className='grid grid-cols-1 lg:grid-cols-4 gap-6'>
 			<div className='col-span-1 lg:col-span-1'>
-				<Sidebar user={user} />
+				<Sidebar user={authUser} />
 			</div>
 			<div className='col-span-1 lg:col-span-3'>
 				<div className='bg-secondary rounded-lg shadow p-6 mb-6'>
@@ -54,7 +54,7 @@ const NetworkPage = () => {
 							<h2 className='text-xl font-semibold mb-4'>My Connections</h2>
 							<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
 								{connections.data.map((connection) => (
-									<UserCard key={connection._id} user={connection} isConnection={true} />
+									<UserCard key={connection._id} authUser={connection} isConnection={true} />
 								))}
 							</div>
 						</div>
