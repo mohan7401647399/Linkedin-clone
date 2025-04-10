@@ -18,11 +18,13 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = Path.resolve()
 
-if (process.env.NODE_ENV === "production") {
-    app.use(cors({
-        origin: process.env.CLIENT_URL,
-        credentials: true
-    }))
+if (process.env.NODE_ENV !== "production") {
+    app.use(
+        cors({
+            origin: "http://localhost:5173",
+            credentials: true,
+        })
+    );
 }
 
 // parse JSON request body
