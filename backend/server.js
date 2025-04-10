@@ -18,15 +18,15 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const __dirname = Path.resolve()
 
-if(process.env.NODE_ENV === "production") {
-    app.use(cors( {
-        origin: process.env.CLIENT_URL,
-        credentials: true,
-    }))    
-}
+// if(process.env.NODE_ENV === "production") {
+app.use(cors({
+    origin: process.env.CLIENT_URL,
+    credentials: true
+}))
+// }
 
 // parse JSON request body
-app.use(express.json({limit: "5mb"}))
+app.use(express.json({ limit: "5mb" }))
     .use(cookieParser());               //  cookie parser
 
 //  all routes
@@ -35,15 +35,15 @@ app.use('/api/v1/auth', authRoutes)                         //  auth routes
     .use('/api/v1/posts', postRoutes)                       //  posts routes
     .use('/api/v1/notifications', notificationRoutes)       //  notification routes
     .use('/api/v1/connections', connectionRoutes)           //  connection routes
- 
-if(process.env.NODE_ENV === "production") {
-    app.use(express.static(Path.join(__dirname, "/frontend/dist")))
 
-    app.get("*", (req, res) => {
-        res.sendFile(Path.resolve(__dirname, "frontend", "dist", "index.html"))
-    })
+// if (process.env.NODE_ENV === "production") {
+app.use(express.static(Path.join(__dirname, "/frontend/dist")))
 
-}
+app.get("*", (req, res) => {
+    res.sendFile(Path.resolve(__dirname, "frontend", "dist", "index.html"))
+})
+
+// }
 
 
 // app connection with server

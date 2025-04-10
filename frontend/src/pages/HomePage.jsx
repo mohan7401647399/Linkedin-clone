@@ -34,7 +34,11 @@ const HomePage = () => {
       <div className='col-span-1 lg:col-span-2 order-first lg:order-none'>
         <PostCreation user={ authUser } />
 
-        { posts?.map(post => <Post key={ post._id } post={ post } />) }
+        {/* Render each post with a unique key */ }
+        { posts?.map((post) => (
+          <Post key={ post._id } post={ post } />
+        )) }
+
         {
           posts?.length === 0 && (
             <div className="bg-white rounded-lg shadow p-8 text-center">
